@@ -40,7 +40,7 @@
             background: var(--bg);
             color: var(--text-main);
             min-height: 100vh;
-            padding: 12px 14px 60px 14px;
+            padding: 8px 10px 60px 10px;
             line-height: 1.5;
         }
 
@@ -52,40 +52,41 @@
         /* STICKY CUSTOM PLAYER DOCK */
         .player-dock {
             position: sticky;
-            top: 8px;
+            top: 4px;
             z-index: 100;
-            background: rgba(15, 23, 36, 0.94);
+            background: rgba(15, 23, 36, 0.96);
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
             border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 12px 16px;
+            border-radius: 12px;
+            padding: 10px 12px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 16px rgba(56, 189, 248, 0.08);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
+        /* Top Status Line */
         .player-top {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 10px;
-            margin-bottom: 10px;
+            gap: 8px;
+            margin-bottom: 6px;
         }
 
         .current-status {
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             font-weight: 600;
             color: var(--text-main);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             min-width: 0;
             flex: 1;
         }
 
         .status-dot {
-            width: 8px;
-            height: 8px;
+            width: 7px;
+            height: 7px;
             border-radius: 50%;
             background: #10b981;
             box-shadow: 0 0 8px #10b981;
@@ -97,62 +98,163 @@
             overflow: hidden;
             text-overflow: ellipsis;
             color: var(--text-muted);
+            font-size: 0.78rem;
         }
 
-        .player-actions {
+        .player-top-right {
             display: flex;
             align-items: center;
             gap: 6px;
             flex-shrink: 0;
         }
 
-        .btn {
+        .btn-speed {
+            font-family: 'Fira Code', monospace;
+            color: var(--accent);
             background: var(--surface);
             border: 1px solid var(--border);
-            color: var(--text-main);
-            padding: 5px 10px;
+            padding: 3px 8px;
             border-radius: 6px;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn-speed:hover {
+            border-color: var(--accent);
+        }
+
+        .mute-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 2px 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.15s ease;
+        }
+
+        .mute-btn:hover {
+            color: var(--text-main);
+        }
+
+        .mute-btn svg {
+            width: 17px;
+            height: 17px;
+        }
+
+        /* Scrubber Timeline Line */
+        .custom-scrubber-line {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(9, 13, 20, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 5px 8px;
+            margin-bottom: 8px;
+        }
+
+        .time-label {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.74rem;
+            color: var(--text-muted);
+            flex-shrink: 0;
+            min-width: 40px;
+        }
+
+        .time-label.current {
+            color: var(--accent);
+            text-align: right;
+        }
+
+        .progress-wrap {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .custom-range {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 5px;
+            border-radius: 999px;
+            background: linear-gradient(to right, var(--accent) 0%, var(--accent) var(--progress, 0%), #1e2b3e var(--progress, 0%), #1e2b3e 100%);
+            outline: none;
+            cursor: pointer;
+            transition: height 0.15s ease;
+        }
+
+        .custom-range:hover {
+            height: 7px;
+        }
+
+        .custom-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: pointer;
+            box-shadow: 0 0 8px var(--accent);
+            transition: transform 0.15s ease;
+        }
+
+        .custom-range::-webkit-slider-thumb:hover {
+            transform: scale(1.25);
+        }
+
+        .custom-range::-moz-range-thumb {
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 0 8px var(--accent);
+            transition: transform 0.15s ease;
+        }
+
+        /* Dedicated Playback Controls Row: Prev, Play/Pause, Next */
+        .playback-controls-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 2px 0;
+        }
+
+        .nav-control-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--flex-color);
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 0.76rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.15s ease;
             display: inline-flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
             user-select: none;
         }
 
-        .btn:hover {
-            border-color: var(--accent);
-            background: var(--surface-hover);
-        }
-
-        .btn-flex {
-            color: var(--flex-color);
-            border-color: var(--flex-border);
+        .nav-control-btn:hover {
             background: var(--flex-bg);
+            border-color: var(--flex-color);
+            transform: translateY(-1px);
         }
 
-        .btn-flex:hover {
-            background: rgba(245, 158, 11, 0.2);
-        }
-
-        .btn-speed {
-            font-family: 'Fira Code', monospace;
-            color: var(--accent);
-            min-width: 38px;
-            justify-content: center;
-        }
-
-        /* CUSTOM CSS AUDIO PLAYER LINE */
-        .custom-player-bar {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(9, 13, 20, 0.75);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 10px;
-            padding: 6px 10px;
+        .nav-control-btn svg {
+            width: 13px;
+            height: 13px;
         }
 
         .play-btn {
@@ -172,126 +274,46 @@
         }
 
         .play-btn:hover {
-            transform: scale(1.06);
+            transform: scale(1.08);
         }
 
         .play-btn svg {
-            width: 18px;
-            height: 18px;
+            width: 17px;
+            height: 17px;
         }
 
-        .time-label {
-            font-family: 'Fira Code', monospace;
-            font-size: 0.78rem;
-            color: var(--text-muted);
-            flex-shrink: 0;
-            min-width: 44px;
-        }
-
-        .time-label.current {
-            color: var(--accent);
-            text-align: right;
-        }
-
-        .progress-wrap {
-            flex: 1;
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        .custom-range {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 100%;
-            height: 6px;
-            border-radius: 999px;
-            background: linear-gradient(to right, var(--accent) 0%, var(--accent) var(--progress, 0%), #1e2b3e var(--progress, 0%), #1e2b3e 100%);
-            outline: none;
-            cursor: pointer;
-            transition: height 0.15s ease;
-        }
-
-        .custom-range:hover {
-            height: 8px;
-        }
-
-        .custom-range::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background: #ffffff;
-            cursor: pointer;
-            box-shadow: 0 0 10px var(--accent);
-            transition: transform 0.15s ease;
-        }
-
-        .custom-range::-webkit-slider-thumb:hover {
-            transform: scale(1.25);
-        }
-
-        .custom-range::-moz-range-thumb {
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background: #ffffff;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 0 10px var(--accent);
-            transition: transform 0.15s ease;
-        }
-
-        .mute-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            padding: 4px;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: color 0.15s ease;
-        }
-
-        .mute-btn:hover {
-            color: var(--text-main);
-        }
-
-        .mute-btn svg {
-            width: 18px;
-            height: 18px;
-        }
-
-        /* CONTROLS BAR: FILTER & SEARCH */
+        /* CONTROLS BAR: 3 TABS + SEARCH */
         .toolbar {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
+            flex-direction: column;
             gap: 8px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
+        /* 3 Tabs: ALWAYS ONE LINE NO MATTER WHAT */
         .filter-tabs {
-            display: flex;
+            display: flex !important;
+            flex-wrap: nowrap !important;
             gap: 6px;
-            flex-wrap: wrap;
+            width: 100%;
         }
 
         .filter-btn {
+            flex: 1 1 0;
+            min-width: 0;
             background: var(--surface);
             border: 1px solid var(--border);
             color: var(--text-muted);
-            padding: 5px 10px;
+            padding: 7px 4px;
             border-radius: 8px;
-            font-size: 0.76rem;
+            font-size: 0.78rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.15s ease;
-            white-space: nowrap;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            text-align: center;
         }
 
         .filter-btn:hover {
@@ -318,14 +340,14 @@
         }
 
         .search-input {
+            width: 100%;
             background: var(--surface);
             border: 1px solid var(--border);
             color: var(--text-main);
-            padding: 6px 12px;
+            padding: 7px 12px;
             border-radius: 8px;
-            font-size: 0.8rem;
+            font-size: 0.82rem;
             outline: none;
-            width: 200px;
             transition: border-color 0.15s ease;
         }
 
@@ -337,15 +359,15 @@
         .transcript-list {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
         }
 
-        /* Desktop Card Style */
+        /* Single Unified Mobile-First Feed (No Double Card Look) */
         .transcript-row {
             background: var(--surface);
             border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 10px 14px;
+            border-radius: 8px;
+            padding: 8px 10px;
             cursor: pointer;
             transition: background 0.15s ease, border-color 0.15s ease;
             position: relative;
@@ -359,33 +381,33 @@
         .transcript-row.active {
             background: var(--active-bg) !important;
             border-color: var(--active-border) !important;
-            box-shadow: 0 0 12px rgba(56, 189, 248, 0.18);
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.16);
         }
 
         .transcript-row.is-flex {
-            border-left: 4px solid var(--flex-color);
-            background: linear-gradient(90deg, rgba(245, 158, 11, 0.08) 0%, var(--surface) 100%);
+            border-left: 3px solid var(--flex-color);
+            background: linear-gradient(90deg, rgba(245, 158, 11, 0.07) 0%, var(--surface) 100%);
         }
 
         .transcript-row.is-manip {
-            border-left: 4px solid var(--manip-color);
-            background: linear-gradient(90deg, rgba(236, 72, 153, 0.08) 0%, var(--surface) 100%);
+            border-left: 3px solid var(--manip-color);
+            background: linear-gradient(90deg, rgba(236, 72, 153, 0.07) 0%, var(--surface) 100%);
         }
 
         .row-meta {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 8px;
-            margin-bottom: 4px;
+            gap: 6px;
+            margin-bottom: 3px;
         }
 
         .timestamp {
             font-family: 'Fira Code', monospace;
-            font-size: 0.74rem;
+            font-size: 0.72rem;
             color: var(--accent);
             background: rgba(56, 189, 248, 0.08);
-            padding: 1px 6px;
+            padding: 1px 5px;
             border-radius: 4px;
         }
 
@@ -400,10 +422,9 @@
         }
 
         .speaker-badge {
-            font-size: 0.68rem;
+            font-size: 0.66rem;
             font-weight: 700;
-            text-transform: uppercase;
-            padding: 1px 6px;
+            padding: 1px 5px;
             border-radius: 4px;
         }
 
@@ -418,11 +439,10 @@
         }
 
         .tag-badge {
-            font-size: 0.68rem;
+            font-size: 0.66rem;
             font-weight: 700;
-            padding: 2px 6px;
+            padding: 1px 5px;
             border-radius: 4px;
-            text-transform: uppercase;
         }
 
         .tag-flex {
@@ -437,16 +457,16 @@
 
         .transcript-text {
             font-family: 'Hind Siliguri', 'Inter', sans-serif;
-            font-size: 0.95rem;
+            font-size: 0.92rem;
             color: #f3f4f6;
-            line-height: 1.55;
+            line-height: 1.5;
         }
 
         .tag-title {
-            font-size: 0.74rem;
+            font-size: 0.72rem;
             color: var(--flex-color);
             font-weight: 600;
-            margin-top: 4px;
+            margin-top: 3px;
             display: flex;
             align-items: center;
             gap: 4px;
@@ -458,89 +478,50 @@
 
         .empty-state {
             text-align: center;
-            padding: 40px 16px;
+            padding: 30px 16px;
             color: var(--text-muted);
             background: var(--surface);
             border: 1px dashed var(--border);
-            border-radius: 10px;
-            font-size: 0.88rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
         }
 
-        /* MOBILE RESPONSIVE OPTIMIZATION */
+        /* Mobile specific refinements */
         @media (max-width: 640px) {
             body {
-                padding: 6px 8px 60px 8px;
-            }
-
-            .container {
-                max-width: 100%;
+                padding: 4px 6px 50px 6px;
             }
 
             .player-dock {
-                top: 4px;
                 padding: 8px 10px;
-                border-radius: 10px;
                 margin-bottom: 8px;
             }
 
-            .player-top {
-                margin-bottom: 6px;
+            .playback-controls-row {
+                gap: 14px;
             }
 
-            .btn {
-                padding: 4px 7px;
-                font-size: 0.7rem;
-            }
-
-            .custom-player-bar {
-                padding: 4px 8px;
-                gap: 8px;
+            .nav-control-btn {
+                padding: 4px 10px;
+                font-size: 0.72rem;
             }
 
             .play-btn {
-                width: 32px;
-                height: 32px;
+                width: 34px;
+                height: 34px;
             }
 
-            .play-btn svg {
-                width: 15px;
-                height: 15px;
+            .filter-btn {
+                font-size: 0.74rem;
+                padding: 6px 2px;
             }
 
-            .time-label {
-                font-size: 0.72rem;
-                min-width: 38px;
-            }
-
-            .toolbar {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 6px;
-                margin-bottom: 8px;
-            }
-
-            .filter-tabs {
-                justify-content: flex-start;
-                overflow-x: auto;
-                padding-bottom: 2px;
-                scrollbar-width: none;
-            }
-
-            .filter-tabs::-webkit-scrollbar {
-                display: none;
-            }
-
-            .search-input {
-                width: 100%;
-            }
-
-            /* DITCH DOUBLE CARD LAYOUT ON MOBILE */
-            /* Flatten rows into a clean, borderless list feed with subtle bottom divider */
+            /* Borderless unified feed on mobile: eliminates double-card look completely */
             .transcript-list {
                 gap: 0;
                 background: var(--surface);
                 border: 1px solid var(--border);
-                border-radius: 10px;
+                border-radius: 8px;
                 overflow: hidden;
             }
 
@@ -549,7 +530,7 @@
                 border: none;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.05);
                 border-radius: 0;
-                padding: 9px 10px;
+                padding: 8px 9px;
             }
 
             .transcript-row:last-child {
@@ -572,8 +553,7 @@
             }
 
             .transcript-text {
-                font-size: 0.9rem;
-                line-height: 1.5;
+                font-size: 0.88rem;
             }
         }
     </style>
@@ -586,36 +566,45 @@
     <div class="container">
         <!-- STICKY CUSTOM PLAYER DOCK -->
         <div class="player-dock">
+            <!-- Line 1: Status & Secondary Options -->
             <div class="player-top">
                 <div class="current-status">
                     <span class="status-dot"></span>
                     <span id="activeLineLabel" class="status-text"></span>
                 </div>
-                <div class="player-actions">
-                    <button class="btn btn-flex" id="prevFlexBtn" title="Jump to previous flex">⏮ Prev</button>
-                    <button class="btn btn-flex" id="nextFlexBtn" title="Jump to next flex">⏭ Next</button>
-                    <button class="btn btn-speed" id="speedBtn" title="Playback speed">1x</button>
+                <div class="player-top-right">
+                    <button class="btn-speed" id="speedBtn" title="প্লেব্যাক স্পিড">1x</button>
+                    <button class="mute-btn" id="muteBtn" aria-label="মিউট / আনমিউট">
+                        <svg id="volumeIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                        <svg id="muteIcon" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+                    </button>
                 </div>
             </div>
 
-            <!-- Custom MP3 Player Line -->
-            <div class="custom-player-bar">
+            <!-- Line 2: Scrubber Timeline Bar -->
+            <div class="custom-scrubber-line">
+                <span class="time-label current" id="currentTimeLabel">00:00</span>
+                <div class="progress-wrap">
+                    <input type="range" id="progressBar" class="custom-range" min="0" max="100" value="0" step="0.1" aria-label="Audio scrubber">
+                </div>
+                <span class="time-label" id="durationLabel">42:10</span>
+            </div>
+
+            <!-- Line 3: Separate Playback Controls (Prev, Play/Pause, Next) -->
+            <div class="playback-controls-row">
+                <button class="nav-control-btn" id="prevFlexBtn" title="পূর্ববর্তী ফ্লেক্স">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+                    <span>আগেরটা</span>
+                </button>
+
                 <button class="play-btn" id="playBtn" aria-label="Play or Pause">
                     <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                     <svg id="pauseIcon" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
                 </button>
 
-                <span class="time-label current" id="currentTimeLabel">00:00</span>
-
-                <div class="progress-wrap">
-                    <input type="range" id="progressBar" class="custom-range" min="0" max="100" value="0" step="0.1" aria-label="Audio scrubber">
-                </div>
-
-                <span class="time-label" id="durationLabel">42:10</span>
-
-                <button class="mute-btn" id="muteBtn" aria-label="Mute or Unmute">
-                    <svg id="volumeIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-                    <svg id="muteIcon" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+                <button class="nav-control-btn" id="nextFlexBtn" title="পরবর্তী ফ্লেক্স">
+                    <span>পরেরটা</span>
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
                 </button>
             </div>
 
@@ -623,19 +612,19 @@
             <audio id="audio" preload="metadata" src="sadik%20sir%202.mp3"></audio>
         </div>
 
-        <!-- CONTROLS -->
+        <!-- CONTROLS: 3 TABS (ALWAYS ONE LINE) + SEARCH -->
         <div class="toolbar">
             <div class="filter-tabs">
-                <button class="filter-btn active" data-filter="all">All (<span id="countAll">257</span>)</button>
-                <button class="filter-btn flex-tab" data-filter="flex">🔥 Major Flexes (<span id="countFlex">9</span>)</button>
-                <button class="filter-btn manip-tab" data-filter="manip">🎭 Manipulation (<span id="countManip">6</span>)</button>
+                <button class="filter-btn active" data-filter="all" title="সব লাইন">সব (<span id="countAll">257</span>)</button>
+                <button class="filter-btn flex-tab" data-filter="flex" title="ফ্লেক্স">🔥 ফ্লেক্স (<span id="countFlex">9</span>)</button>
+                <button class="filter-btn manip-tab" data-filter="manip" title="ম্যানিপুলেশন">🎭 ম্যানিপুলেশন (<span id="countManip">6</span>)</button>
             </div>
-            <input type="text" id="searchInput" class="search-input" placeholder="Search transcript...">
+            <input type="text" id="searchInput" class="search-input" placeholder="খুঁজুন / Search transcript...">
         </div>
 
         <!-- TRANSCRIPT LIST -->
         <main class="transcript-list" id="transcriptList">
-            <div class="empty-state">Loading transcript...</div>
+            <div class="empty-state">লোড হচ্ছে...</div>
         </main>
     </div>
 
@@ -643,23 +632,23 @@
         // High-level analysis mapping of all major flexes & psychological manipulation moments
         const labeledMoments = [
             // Major Flexes
-            { start: 52.9, end: 80.5, label: "Proxy / Uncle's Account Multi-Accounting Flex", type: "flex" },
-            { start: 87.6, end: 126.5, label: "Top-Rated Seller Priority Privileges Flex", type: "flex" },
-            { start: 273.9, end: 299.5, label: "Laravel Agency & 3,000 Completed Projects Flex", type: "flex" },
-            { start: 299.6, end: 313.5, label: "Producing Top-Rated Students / 'Nothing to Prove'", type: "flex" },
-            { start: 366.9, end: 384.5, label: "Money Desensitization ($500-$1,000 Order Is Just Pain)", type: "flex" },
-            { start: 1018.6, end: 1032.5, label: "405 Completed Orders Account Value Flex", type: "flex" },
-            { start: 1224.6, end: 1243.5, label: "$5,000 Passive Earnings Without Wasting Nights", type: "flex" },
-            { start: 1251.6, end: 1303.5, label: "Global Monopoly (31% vs 85% Worldwide Reach)", type: "flex" },
-            { start: 1403.1, end: 1438.0, label: "Live Client Conversion Flex via Mobile App", type: "flex" },
+            { start: 52.9, end: 80.5, label: "প্রক্সি / মামার একাউন্ট মাল্টি-অ্যাকাউন্টিং ফ্লেক্স", type: "flex" },
+            { start: 87.6, end: 126.5, label: "টপ রেটেড সেলার প্রায়োরিটি প্রিভিলেজ ফ্লেক্স", type: "flex" },
+            { start: 273.9, end: 299.5, label: "লারাভেল এজেন্সি ও ৩,০০০ কমপ্লিটেড প্রজেক্ট ফ্লেক্স", type: "flex" },
+            { start: 299.6, end: 313.5, label: "সফল শিক্ষার্থী ও 'ফাঁকিবাজির প্রমাণ করার নাই'", type: "flex" },
+            { start: 366.9, end: 384.5, label: "টাকা নিয়ে অবসাদ ($১০০০ ডলারও জাস্ট একটা পেইন)", type: "flex" },
+            { start: 1018.6, end: 1032.5, label: "৪০৫ অর্ডার কমপ্লিটেড একাউন্ট ভ্যালু ফ্লেক্স", type: "flex" },
+            { start: 1224.6, end: 1243.5, label: "$৫,০০০ প্যাসিভ ইনকাম (রাত না জাগার ফ্লেক্স)", type: "flex" },
+            { start: 1251.6, end: 1303.5, label: "গ্লোবাল ক্লায়েন্ট মনোপলি (৩১% বনাম ৮৫% কভারেজ)", type: "flex" },
+            { start: 1403.1, end: 1438.0, label: "লাইভ ক্লাসে মোবাইল অ্যাপে কাজ নামানোর ফ্লেক্স", type: "flex" },
 
             // Manipulation / Authoritarian / Control Moments
-            { start: 227.1, end: 247.5, label: "Condescending 'Genius' Mockery vs Self-Praise", type: "manip" },
-            { start: 323.1, end: 348.0, label: "Mandatory 'Bokbok' Justification (Must Listen)", type: "manip" },
-            { start: 1303.6, end: 1329.5, label: "Shaming Student Over Food / Lunch Break Request", type: "manip" },
-            { start: 1494.6, end: 1512.5, label: "Creating Dependency: 'You Can't Close Deals Without Me'", type: "manip" },
-            { start: 2125.1, end: 2135.5, label: "Bizarre 'Mother' Analogy Disarming Student", type: "manip" },
-            { start: 2221.1, end: 2249.5, label: "Paternalistic 'BABA' Dismissal of Student Eagerness", type: "manip" }
+            { start: 227.1, end: 247.5, label: "শিক্ষার্থীদের বুদ্ধিমত্তা নিয়ে তাচ্ছিল্য ও আত্মপ্রশংসা", type: "manip" },
+            { start: 323.1, end: 348.0, label: "বকবক শোনা বাধ্যতামূলক করার কর্তৃত্ববাদী ভঙ্গি", type: "manip" },
+            { start: 1303.6, end: 1329.5, label: "খাবারের ব্রেক চাওয়ায় শিক্ষার্থীকে খোঁচা ও লজ্জা দেওয়া", type: "manip" },
+            { start: 1494.6, end: 1512.5, label: "নির্ভরশীলতা তৈরি: 'বকবক না শুনলে কাজ নামাতে পারবেন না'", type: "manip" },
+            { start: 2125.1, end: 2135.5, label: "প্রশ্ন আটকাতে 'মাকে চেনা'র অদ্ভুত তুলনা", type: "manip" },
+            { start: 2221.1, end: 2249.5, label: "প্যাটার্নালিস্টিক 'বাবা' বলে কৌতূহল দমন", type: "manip" }
         ];
 
         let transcriptData = [];
@@ -735,7 +724,11 @@
             const curr = audio.currentTime;
             const active = transcriptData.find(d => curr >= d.start && curr < d.end);
             if (active) {
-                let label = `[${formatTime(active.start)}] ${active.speaker}`;
+                let speakerLabel = active.speaker;
+                if (active.speaker.toLowerCase() === 'teacher') speakerLabel = 'শিক্ষক';
+                else if (active.speaker.toLowerCase() === 'student') speakerLabel = 'শিক্ষার্থী';
+
+                let label = `[${formatTime(active.start)}] ${speakerLabel}`;
                 if (active.tagLabel) {
                     label += ` — ${active.tagLabel}`;
                 }
@@ -824,7 +817,7 @@
             });
 
             if (filtered.length === 0) {
-                listEl.innerHTML = `<div class="empty-state">No transcript lines match your search or filter.</div>`;
+                listEl.innerHTML = `<div class="empty-state">কোনো লাইন খুঁজে পাওয়া যায়নি।</div>`;
                 return;
             }
 
@@ -841,16 +834,20 @@
 
                 let badgeHtml = '';
                 if (item.tagType === 'flex') {
-                    badgeHtml = `<span class="tag-badge tag-flex">🔥 Flex</span>`;
+                    badgeHtml = `<span class="tag-badge tag-flex">🔥 ফ্লেক্স</span>`;
                 } else if (item.tagType === 'manip') {
-                    badgeHtml = `<span class="tag-badge tag-manip">🎭 Control</span>`;
+                    badgeHtml = `<span class="tag-badge tag-manip">🎭 ম্যানিপুলেশন</span>`;
                 }
+
+                let speakerLabel = item.speaker;
+                if (item.speaker.toLowerCase() === 'teacher') speakerLabel = 'শিক্ষক';
+                else if (item.speaker.toLowerCase() === 'student') speakerLabel = 'শিক্ষার্থী';
 
                 row.innerHTML = `
                     <div class="row-meta">
                         <div style="display: flex; align-items: center; gap: 6px;">
                             <span class="timestamp">${formatTime(item.start)}</span>
-                            <span class="speaker-badge ${item.speaker.toLowerCase() === 'student' ? 'speaker-student' : 'speaker-teacher'}">${item.speaker}</span>
+                            <span class="speaker-badge ${item.speaker.toLowerCase() === 'student' ? 'speaker-student' : 'speaker-teacher'}">${speakerLabel}</span>
                         </div>
                         ${badgeHtml}
                     </div>
