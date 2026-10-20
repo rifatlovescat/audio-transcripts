@@ -68,8 +68,8 @@
         .player-top {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 8px;
+            justify-content: center;
+            min-height: 18px;
             margin-bottom: 6px;
         }
 
@@ -79,18 +79,9 @@
             color: var(--text-main);
             display: flex;
             align-items: center;
-            gap: 6px;
+            justify-content: center;
+            width: 100%;
             min-width: 0;
-            flex: 1;
-        }
-
-        .status-dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: #10b981;
-            box-shadow: 0 0 8px #10b981;
-            flex-shrink: 0;
         }
 
         .status-text {
@@ -99,51 +90,7 @@
             text-overflow: ellipsis;
             color: var(--text-muted);
             font-size: 0.78rem;
-        }
-
-        .player-top-right {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            flex-shrink: 0;
-        }
-
-        .btn-speed {
-            font-family: 'Fira Code', monospace;
-            color: var(--accent);
-            background: var(--surface);
-            border: 1px solid var(--border);
-            padding: 3px 8px;
-            border-radius: 6px;
-            font-size: 0.72rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.15s ease;
-        }
-
-        .btn-speed:hover {
-            border-color: var(--accent);
-        }
-
-        .mute-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            padding: 2px 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: color 0.15s ease;
-        }
-
-        .mute-btn:hover {
-            color: var(--text-main);
-        }
-
-        .mute-btn svg {
-            width: 17px;
-            height: 17px;
+            text-align: center;
         }
 
         /* Scrubber Timeline Line */
@@ -221,29 +168,54 @@
             transition: transform 0.15s ease;
         }
 
-        /* Dedicated Playback Controls Row: Prev, Play/Pause, Next */
+        /* Dedicated Playback Controls Row: 1x Speed, Prev, Play/Pause, Next, Mute */
         .playback-controls-row {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 20px;
+            gap: 16px;
             padding: 2px 0;
+        }
+
+        .btn-speed {
+            font-family: 'Fira Code', monospace;
+            color: var(--accent);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            font-size: 0.74rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+            flex-shrink: 0;
+            padding: 0;
+        }
+
+        .btn-speed:hover {
+            border-color: var(--accent);
+            background: rgba(56, 189, 248, 0.1);
         }
 
         .nav-control-btn {
             background: var(--surface);
             border: 1px solid var(--border);
             color: var(--flex-color);
-            padding: 5px 12px;
+            width: 34px;
+            height: 34px;
             border-radius: 8px;
-            font-size: 0.76rem;
-            font-weight: 600;
             cursor: pointer;
             transition: all 0.15s ease;
             display: inline-flex;
             align-items: center;
-            gap: 5px;
+            justify-content: center;
             user-select: none;
+            flex-shrink: 0;
+            padding: 0;
         }
 
         .nav-control-btn:hover {
@@ -253,13 +225,13 @@
         }
 
         .nav-control-btn svg {
-            width: 13px;
-            height: 13px;
+            width: 15px;
+            height: 15px;
         }
 
         .play-btn {
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             background: var(--accent);
             border: none;
@@ -280,6 +252,33 @@
         .play-btn svg {
             width: 17px;
             height: 17px;
+        }
+
+        .mute-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            cursor: pointer;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+            flex-shrink: 0;
+        }
+
+        .mute-btn:hover {
+            color: var(--text-main);
+            border-color: var(--accent);
+            background: rgba(56, 189, 248, 0.1);
+        }
+
+        .mute-btn svg {
+            width: 16px;
+            height: 16px;
         }
 
         /* CONTROLS BAR: 3 TABS + SEARCH */
@@ -498,17 +497,19 @@
             }
 
             .playback-controls-row {
-                gap: 14px;
+                gap: 12px;
             }
 
-            .nav-control-btn {
-                padding: 4px 10px;
-                font-size: 0.72rem;
+            .btn-speed,
+            .nav-control-btn,
+            .mute-btn {
+                width: 32px;
+                height: 32px;
             }
 
             .play-btn {
-                width: 34px;
-                height: 34px;
+                width: 35px;
+                height: 35px;
             }
 
             .filter-btn {
@@ -566,18 +567,10 @@
     <div class="container">
         <!-- STICKY CUSTOM PLAYER DOCK -->
         <div class="player-dock">
-            <!-- Line 1: Status & Secondary Options -->
+            <!-- Line 1: Status Line (Dot removed, clean centered indicator) -->
             <div class="player-top">
                 <div class="current-status">
-                    <span class="status-dot"></span>
-                    <span id="activeLineLabel" class="status-text"></span>
-                </div>
-                <div class="player-top-right">
-                    <button class="btn-speed" id="speedBtn" title="প্লেব্যাক স্পিড">1x</button>
-                    <button class="mute-btn" id="muteBtn" aria-label="মিউট / আনমিউট">
-                        <svg id="volumeIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-                        <svg id="muteIcon" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
-                    </button>
+                    <span id="activeLineLabel" class="status-text">সাদিক স্যার ২ — অডিও ট্রান্সক্রিপ্ট</span>
                 </div>
             </div>
 
@@ -590,11 +583,12 @@
                 <span class="time-label" id="durationLabel">42:10</span>
             </div>
 
-            <!-- Line 3: Separate Playback Controls (Prev, Play/Pause, Next) -->
+            <!-- Line 3: Playback Controls (1x Speed, Prev, Play/Pause, Next, Mute) -->
             <div class="playback-controls-row">
-                <button class="nav-control-btn" id="prevFlexBtn" title="পূর্ববর্তী ফ্লেক্স">
+                <button class="btn-speed" id="speedBtn" title="প্লেব্যাক গতি">1x</button>
+
+                <button class="nav-control-btn" id="prevFlexBtn" title="পূর্ববর্তী">
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
-                    <span>আগেরটা</span>
                 </button>
 
                 <button class="play-btn" id="playBtn" aria-label="Play or Pause">
@@ -602,9 +596,13 @@
                     <svg id="pauseIcon" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
                 </button>
 
-                <button class="nav-control-btn" id="nextFlexBtn" title="পরবর্তী ফ্লেক্স">
-                    <span>পরেরটা</span>
+                <button class="nav-control-btn" id="nextFlexBtn" title="পরবর্তী">
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+                </button>
+
+                <button class="mute-btn" id="muteBtn" aria-label="মিউট / আনমিউট" title="মিউট / আনমিউট">
+                    <svg id="volumeIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                    <svg id="muteIcon" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
                 </button>
             </div>
 
@@ -616,7 +614,7 @@
         <div class="toolbar">
             <div class="filter-tabs">
                 <button class="filter-btn active" data-filter="all" title="সব লাইন">সব (<span id="countAll">257</span>)</button>
-                <button class="filter-btn flex-tab" data-filter="flex" title="ফ্লেক্স">🔥 ফ্লেক্স (<span id="countFlex">9</span>)</button>
+                <button class="filter-btn flex-tab" data-filter="flex" title="নিজ">🔥 নিজ (<span id="countFlex">9</span>)</button>
                 <button class="filter-btn manip-tab" data-filter="manip" title="ম্যানিপুলেশন">🎭 ম্যানিপুলেশন (<span id="countManip">6</span>)</button>
             </div>
             <input type="text" id="searchInput" class="search-input" placeholder="খুঁজুন / Search transcript...">
@@ -629,18 +627,18 @@
     </div>
 
     <script>
-        // High-level analysis mapping of all major flexes & psychological manipulation moments
+        // High-level analysis mapping of all major self-story moments & psychological manipulation moments
         const labeledMoments = [
-            // Major Flexes
-            { start: 52.9, end: 80.5, label: "প্রক্সি / মামার একাউন্ট মাল্টি-অ্যাকাউন্টিং ফ্লেক্স", type: "flex" },
-            { start: 87.6, end: 126.5, label: "টপ রেটেড সেলার প্রায়োরিটি প্রিভিলেজ ফ্লেক্স", type: "flex" },
-            { start: 273.9, end: 299.5, label: "লারাভেল এজেন্সি ও ৩,০০০ কমপ্লিটেড প্রজেক্ট ফ্লেক্স", type: "flex" },
-            { start: 299.6, end: 313.5, label: "সফল শিক্ষার্থী ও 'ফাঁকিবাজির প্রমাণ করার নাই'", type: "flex" },
+            // Major Self-Highlights / Personal Story Moments
+            { start: 52.9, end: 80.5, label: "প্রক্সি / মামার একাউন্ট মাল্টি-অ্যাকাউন্টিং (নিজ গল্প)", type: "flex" },
+            { start: 87.6, end: 126.5, label: "টপ রেটেড সেলার প্রায়োরিটি প্রিভিলেজ (নিজ)", type: "flex" },
+            { start: 273.9, end: 299.5, label: "লারাভেল এজেন্সি ও ৩,০০০ কমপ্লিটেড প্রজেক্ট (নিজ)", type: "flex" },
+            { start: 299.6, end: 313.5, label: "সফল শিক্ষার্থী ও 'ফাঁকিবাজির প্রমাণ করার নাই' (নিজ)", type: "flex" },
             { start: 366.9, end: 384.5, label: "টাকা নিয়ে অবসাদ ($১০০০ ডলারও জাস্ট একটা পেইন)", type: "flex" },
-            { start: 1018.6, end: 1032.5, label: "৪০৫ অর্ডার কমপ্লিটেড একাউন্ট ভ্যালু ফ্লেক্স", type: "flex" },
-            { start: 1224.6, end: 1243.5, label: "$৫,০০০ প্যাসিভ ইনকাম (রাত না জাগার ফ্লেক্স)", type: "flex" },
+            { start: 1018.6, end: 1032.5, label: "৪০৫ অর্ডার কমপ্লিটেড একাউন্ট ভ্যালু (নিজ)", type: "flex" },
+            { start: 1224.6, end: 1243.5, label: "$৫,০০০ প্যাসিভ ইনকাম (রাত না জাগা - নিজ গল্প)", type: "flex" },
             { start: 1251.6, end: 1303.5, label: "গ্লোবাল ক্লায়েন্ট মনোপলি (৩১% বনাম ৮৫% কভারেজ)", type: "flex" },
-            { start: 1403.1, end: 1438.0, label: "লাইভ ক্লাসে মোবাইল অ্যাপে কাজ নামানোর ফ্লেক্স", type: "flex" },
+            { start: 1403.1, end: 1438.0, label: "লাইভ ক্লাসে মোবাইল অ্যাপে কাজ নামানো (নিজ)", type: "flex" },
 
             // Manipulation / Authoritarian / Control Moments
             { start: 227.1, end: 247.5, label: "শিক্ষার্থীদের বুদ্ধিমত্তা নিয়ে তাচ্ছিল্য ও আত্মপ্রশংসা", type: "manip" },
@@ -834,7 +832,7 @@
 
                 let badgeHtml = '';
                 if (item.tagType === 'flex') {
-                    badgeHtml = `<span class="tag-badge tag-flex">🔥 ফ্লেক্স</span>`;
+                    badgeHtml = `<span class="tag-badge tag-flex">🔥 নিজ</span>`;
                 } else if (item.tagType === 'manip') {
                     badgeHtml = `<span class="tag-badge tag-manip">🎭 ম্যানিপুলেশন</span>`;
                 }
