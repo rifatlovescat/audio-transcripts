@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="bn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sadik Sir 2 — Audio Player & Transcript Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #090d14;
+            --surface: #111824;
+            --surface-hover: #172131;
+            --border: #1e2b3e;
+            --text-main: #f3f4f6;
+            --text-muted: #94a3b8;
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.25);
+            --flex-color: #f59e0b;
+            --flex-bg: rgba(245, 158, 11, 0.08);
+            --flex-border: rgba(245, 158, 11, 0.4);
+            --manip-color: #ec4899;
+            --manip-bg: rgba(236, 72, 153, 0.08);
+            --manip-border: rgba(236, 72, 153, 0.4);
+            --active-bg: rgba(56, 189, 248, 0.12);
+            --active-border: #38bdf8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Inter', 'Hind Siliguri', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 12px 14px 60px 14px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* STICKY CUSTOM PLAYER DOCK */
+        .player-dock {
+            position: sticky;
+            top: 8px;
+            z-index: 100;
+            background: rgba(15, 23, 36, 0.94);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 12px 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 16px rgba(56, 189, 248, 0.08);
+            margin-bottom: 12px;
+        }
+
+        .player-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .current-status {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 8px #10b981;
+            flex-shrink: 0;
+        }
+
+        .status-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--text-muted);
+        }
+
+        .player-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            user-select: none;
+        }
+
+        .btn:hover {
+            border-color: var(--accent);
+            background: var(--surface-hover);
+        }
+
+        .btn-flex {
+            color: var(--flex-color);
+            border-color: var(--flex-border);
+            background: var(--flex-bg);
+        }
+
+        .btn-flex:hover {
+            background: rgba(245, 158, 11, 0.2);
+        }
+
+        .btn-speed {
+            font-family: 'Fira Code', monospace;
+            color: var(--accent);
+            min-width: 38px;
+            justify-content: center;
+        }
+
+        /* CUSTOM CSS AUDIO PLAYER LINE */
+        .custom-player-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(9, 13, 20, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            padding: 6px 10px;
+        }
+
+        .play-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: none;
+            color: #0b111a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+
+        .play-btn:hover {
+            transform: scale(1.06);
+        }
+
+        .play-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .time-label {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            flex-shrink: 0;
+            min-width: 44px;
+        }
+
+        .time-label.current {
+            color: var(--accent);
+            text-align: right;
+        }
+
+        .progress-wrap {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .custom-range {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 999px;
+            background: linear-gradient(to right, var(--accent) 0%, var(--accent) var(--progress, 0%), #1e2b3e var(--progress, 0%), #1e2b3e 100%);
+            outline: none;
+            cursor: pointer;
+            transition: height 0.15s ease;
+        }
+
+        .custom-range:hover {
+            height: 8px;
+        }
+
+        .custom-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--accent);
+            transition: transform 0.15s ease;
+        }
+
+        .custom-range::-webkit-slider-thumb:hover {
+            transform: scale(1.25);
+        }
+
+        .custom-range::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--accent);
+            transition: transform 0.15s ease;
+        }
+
+        .mute-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: color 0.15s ease;
+        }
+
+        .mute-btn:hover {
+            color: var(--text-main);
+        }
+
+        .mute-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* CONTROLS BAR: FILTER & SEARCH */
+        .toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            white-space: nowrap;
+        }
+
+        .filter-btn:hover {
+            color: var(--text-main);
+            border-color: #3b4d66;
+        }
+
+        .filter-btn.active {
+            color: var(--accent);
+            border-color: var(--accent);
+            background: rgba(56, 189, 248, 0.08);
+        }
+
+        .filter-btn.active.flex-tab {
+            color: var(--flex-color);
+            border-color: var(--flex-color);
+            background: var(--flex-bg);
+        }
+
+        .filter-btn.active.manip-tab {
+            color: var(--manip-color);
+            border-color: var(--manip-color);
+            background: var(--manip-bg);
+        }
+
+        .search-input {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            outline: none;
+            width: 200px;
+            transition: border-color 0.15s ease;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent);
+        }
+
+        /* TRANSCRIPT LIST */
+        .transcript-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        /* Desktop Card Style */
+        .transcript-row {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 14px;
+            cursor: pointer;
+            transition: background 0.15s ease, border-color 0.15s ease;
+            position: relative;
+        }
+
+        .transcript-row:hover {
+            background: var(--surface-hover);
+            border-color: #2e3e55;
+        }
+
+        .transcript-row.active {
+            background: var(--active-bg) !important;
+            border-color: var(--active-border) !important;
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.18);
+        }
+
+        .transcript-row.is-flex {
+            border-left: 4px solid var(--flex-color);
+            background: linear-gradient(90deg, rgba(245, 158, 11, 0.08) 0%, var(--surface) 100%);
+        }
+
+        .transcript-row.is-manip {
+            border-left: 4px solid var(--manip-color);
+            background: linear-gradient(90deg, rgba(236, 72, 153, 0.08) 0%, var(--surface) 100%);
+        }
+
+        .row-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .timestamp {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.74rem;
+            color: var(--accent);
+            background: rgba(56, 189, 248, 0.08);
+            padding: 1px 6px;
+            border-radius: 4px;
+        }
+
+        .is-flex .timestamp {
+            color: var(--flex-color);
+            background: rgba(245, 158, 11, 0.12);
+        }
+
+        .is-manip .timestamp {
+            color: var(--manip-color);
+            background: rgba(236, 72, 153, 0.12);
+        }
+
+        .speaker-badge {
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 1px 6px;
+            border-radius: 4px;
+        }
+
+        .speaker-teacher {
+            background: rgba(99, 102, 241, 0.15);
+            color: #818cf8;
+        }
+
+        .speaker-student {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+        }
+
+        .tag-badge {
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .tag-flex {
+            background: var(--flex-color);
+            color: #78350f;
+        }
+
+        .tag-manip {
+            background: var(--manip-color);
+            color: #ffffff;
+        }
+
+        .transcript-text {
+            font-family: 'Hind Siliguri', 'Inter', sans-serif;
+            font-size: 0.95rem;
+            color: #f3f4f6;
+            line-height: 1.55;
+        }
+
+        .tag-title {
+            font-size: 0.74rem;
+            color: var(--flex-color);
+            font-weight: 600;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .tag-title.manip-title {
+            color: var(--manip-color);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 16px;
+            color: var(--text-muted);
+            background: var(--surface);
+            border: 1px dashed var(--border);
+            border-radius: 10px;
+            font-size: 0.88rem;
+        }
+
+        /* MOBILE RESPONSIVE OPTIMIZATION */
+        @media (max-width: 640px) {
+            body {
+                padding: 6px 8px 60px 8px;
+            }
+
+            .container {
+                max-width: 100%;
+            }
+
+            .player-dock {
+                top: 4px;
+                padding: 8px 10px;
+                border-radius: 10px;
+                margin-bottom: 8px;
+            }
+
+            .player-top {
+                margin-bottom: 6px;
+            }
+
+            .btn {
+                padding: 4px 7px;
+                font-size: 0.7rem;
+            }
+
+            .custom-player-bar {
+                padding: 4px 8px;
+                gap: 8px;
+            }
+
+            .play-btn {
+                width: 32px;
+                height: 32px;
+            }
+
+            .play-btn svg {
+                width: 15px;
+                height: 15px;
+            }
+
+            .time-label {
+                font-size: 0.72rem;
+                min-width: 38px;
+            }
+
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 6px;
+                margin-bottom: 8px;
+            }
+
+            .filter-tabs {
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 2px;
+                scrollbar-width: none;
+            }
+
+            .filter-tabs::-webkit-scrollbar {
+                display: none;
+            }
+
+            .search-input {
+                width: 100%;
+            }
+
+            /* DITCH DOUBLE CARD LAYOUT ON MOBILE */
+            /* Flatten rows into a clean, borderless list feed with subtle bottom divider */
+            .transcript-list {
+                gap: 0;
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: 10px;
+                overflow: hidden;
+            }
+
+            .transcript-row {
+                background: transparent;
+                border: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                border-radius: 0;
+                padding: 9px 10px;
+            }
+
+            .transcript-row:last-child {
+                border-bottom: none;
+            }
+
+            .transcript-row.is-flex {
+                border-left: 3px solid var(--flex-color);
+                background: rgba(245, 158, 11, 0.06);
+            }
+
+            .transcript-row.is-manip {
+                border-left: 3px solid var(--manip-color);
+                background: rgba(236, 72, 153, 0.06);
+            }
+
+            .transcript-row.active {
+                background: rgba(56, 189, 248, 0.14) !important;
+                border-left: 3px solid var(--accent) !important;
+            }
+
+            .transcript-text {
+                font-size: 0.9rem;
+                line-height: 1.5;
+            }
+        }
+    </style>
+    <!-- Loads seamlessly on GitHub Pages AND local file:/// without CORS restrictions -->
+    <script src="transcript.js"></script>
+</head>
+
+<body>
+
+    <div class="container">
+        <!-- STICKY CUSTOM PLAYER DOCK -->
+        <div class="player-dock">
+            <div class="player-top">
+                <div class="current-status">
+                    <span class="status-dot"></span>
+                    <span id="activeLineLabel" class="status-text"></span>
+                </div>
+                <div class="player-actions">
+                    <button class="btn btn-flex" id="prevFlexBtn" title="Jump to previous flex">⏮ Prev</button>
+                    <button class="btn btn-flex" id="nextFlexBtn" title="Jump to next flex">⏭ Next</button>
+                    <button class="btn btn-speed" id="speedBtn" title="Playback speed">1x</button>
+                </div>
+            </div>
+
+            <!-- Custom MP3 Player Line -->
+            <div class="custom-player-bar">
+                <button class="play-btn" id="playBtn" aria-label="Play or Pause">
+                    <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                    <svg id="pauseIcon" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                </button>
+
+                <span class="time-label current" id="currentTimeLabel">00:00</span>
+
+                <div class="progress-wrap">
+                    <input type="range" id="progressBar" class="custom-range" min="0" max="100" value="0" step="0.1" aria-label="Audio scrubber">
+                </div>
+
+                <span class="time-label" id="durationLabel">42:10</span>
+
+                <button class="mute-btn" id="muteBtn" aria-label="Mute or Unmute">
+                    <svg id="volumeIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                    <svg id="muteIcon" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+                </button>
+            </div>
+
+            <!-- Hidden native audio element -->
+            <audio id="audio" preload="metadata" src="sadik%20sir%202.mp3"></audio>
+        </div>
+
+        <!-- CONTROLS -->
+        <div class="toolbar">
+            <div class="filter-tabs">
+                <button class="filter-btn active" data-filter="all">All (<span id="countAll">257</span>)</button>
+                <button class="filter-btn flex-tab" data-filter="flex">🔥 Major Flexes (<span id="countFlex">9</span>)</button>
+                <button class="filter-btn manip-tab" data-filter="manip">🎭 Manipulation (<span id="countManip">6</span>)</button>
+            </div>
+            <input type="text" id="searchInput" class="search-input" placeholder="Search transcript...">
+        </div>
+
+        <!-- TRANSCRIPT LIST -->
+        <main class="transcript-list" id="transcriptList">
+            <div class="empty-state">Loading transcript...</div>
+        </main>
+    </div>
+
+    <script>
+        // High-level analysis mapping of all major flexes & psychological manipulation moments
+        const labeledMoments = [
+            // Major Flexes
+            { start: 52.9, end: 80.5, label: "Proxy / Uncle's Account Multi-Accounting Flex", type: "flex" },
+            { start: 87.6, end: 126.5, label: "Top-Rated Seller Priority Privileges Flex", type: "flex" },
+            { start: 273.9, end: 299.5, label: "Laravel Agency & 3,000 Completed Projects Flex", type: "flex" },
+            { start: 299.6, end: 313.5, label: "Producing Top-Rated Students / 'Nothing to Prove'", type: "flex" },
+            { start: 366.9, end: 384.5, label: "Money Desensitization ($500-$1,000 Order Is Just Pain)", type: "flex" },
+            { start: 1018.6, end: 1032.5, label: "405 Completed Orders Account Value Flex", type: "flex" },
+            { start: 1224.6, end: 1243.5, label: "$5,000 Passive Earnings Without Wasting Nights", type: "flex" },
+            { start: 1251.6, end: 1303.5, label: "Global Monopoly (31% vs 85% Worldwide Reach)", type: "flex" },
+            { start: 1403.1, end: 1438.0, label: "Live Client Conversion Flex via Mobile App", type: "flex" },
+
+            // Manipulation / Authoritarian / Control Moments
+            { start: 227.1, end: 247.5, label: "Condescending 'Genius' Mockery vs Self-Praise", type: "manip" },
+            { start: 323.1, end: 348.0, label: "Mandatory 'Bokbok' Justification (Must Listen)", type: "manip" },
+            { start: 1303.6, end: 1329.5, label: "Shaming Student Over Food / Lunch Break Request", type: "manip" },
+            { start: 1494.6, end: 1512.5, label: "Creating Dependency: 'You Can't Close Deals Without Me'", type: "manip" },
+            { start: 2125.1, end: 2135.5, label: "Bizarre 'Mother' Analogy Disarming Student", type: "manip" },
+            { start: 2221.1, end: 2249.5, label: "Paternalistic 'BABA' Dismissal of Student Eagerness", type: "manip" }
+        ];
+
+        let transcriptData = [];
+        let currentFilter = 'all';
+        let searchQuery = '';
+        let flexMoments = [];
+        let isScrubbing = false;
+
+        const audio = document.getElementById('audio');
+        const playBtn = document.getElementById('playBtn');
+        const playIcon = document.getElementById('playIcon');
+        const pauseIcon = document.getElementById('pauseIcon');
+        const progressBar = document.getElementById('progressBar');
+        const currentTimeLabel = document.getElementById('currentTimeLabel');
+        const durationLabel = document.getElementById('durationLabel');
+        const muteBtn = document.getElementById('muteBtn');
+        const volumeIcon = document.getElementById('volumeIcon');
+        const muteIcon = document.getElementById('muteIcon');
+        const speedBtn = document.getElementById('speedBtn');
+
+        const listEl = document.getElementById('transcriptList');
+        const activeLabelEl = document.getElementById('activeLineLabel');
+        const searchInput = document.getElementById('searchInput');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const prevFlexBtn = document.getElementById('prevFlexBtn');
+        const nextFlexBtn = document.getElementById('nextFlexBtn');
+
+        const speeds = [1, 1.25, 1.5, 2];
+        let currentSpeedIdx = 0;
+
+        function formatTime(sec) {
+            if (isNaN(sec) || sec < 0) return "00:00";
+            const m = Math.floor(sec / 60);
+            const s = Math.floor(sec % 60);
+            return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
+
+        // Custom Audio Player Controls
+        playBtn.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play();
+            } else {
+                audio.pause();
+            }
+        });
+
+        audio.addEventListener('play', () => {
+            playIcon.style.display = 'none';
+            pauseIcon.style.display = 'block';
+        });
+
+        audio.addEventListener('pause', () => {
+            playIcon.style.display = 'block';
+            pauseIcon.style.display = 'none';
+        });
+
+        audio.addEventListener('loadedmetadata', () => {
+            durationLabel.textContent = formatTime(audio.duration);
+        });
+
+        audio.addEventListener('timeupdate', () => {
+            if (!isScrubbing) {
+                const curr = audio.currentTime;
+                const dur = audio.duration || 2530;
+                currentTimeLabel.textContent = formatTime(curr);
+                
+                const pct = dur > 0 ? (curr / dur) * 100 : 0;
+                progressBar.value = pct;
+                progressBar.style.setProperty('--progress', `${pct}%`);
+            }
+
+            // Sync with transcript lines
+            const curr = audio.currentTime;
+            const active = transcriptData.find(d => curr >= d.start && curr < d.end);
+            if (active) {
+                let label = `[${formatTime(active.start)}] ${active.speaker}`;
+                if (active.tagLabel) {
+                    label += ` — ${active.tagLabel}`;
+                }
+                activeLabelEl.textContent = label;
+
+                document.querySelectorAll('.transcript-row').forEach(r => r.classList.remove('active'));
+                const activeEl = document.getElementById(`line-${active.id}`);
+                if (activeEl) {
+                    activeEl.classList.add('active');
+                    const rect = activeEl.getBoundingClientRect();
+                    if (rect.top < 120 || rect.bottom > window.innerHeight) {
+                        activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }
+                }
+            }
+        });
+
+        // Scrubbing input
+        progressBar.addEventListener('input', (e) => {
+            isScrubbing = true;
+            const pct = parseFloat(e.target.value);
+            progressBar.style.setProperty('--progress', `${pct}%`);
+            const dur = audio.duration || 2530;
+            const seekTime = (pct / 100) * dur;
+            currentTimeLabel.textContent = formatTime(seekTime);
+        });
+
+        progressBar.addEventListener('change', (e) => {
+            const pct = parseFloat(e.target.value);
+            const dur = audio.duration || 2530;
+            audio.currentTime = (pct / 100) * dur;
+            isScrubbing = false;
+        });
+
+        // Mute / Unmute
+        muteBtn.addEventListener('click', () => {
+            audio.muted = !audio.muted;
+            if (audio.muted) {
+                volumeIcon.style.display = 'none';
+                muteIcon.style.display = 'block';
+            } else {
+                volumeIcon.style.display = 'block';
+                muteIcon.style.display = 'none';
+            }
+        });
+
+        // Playback Speed Toggle
+        speedBtn.addEventListener('click', () => {
+            currentSpeedIdx = (currentSpeedIdx + 1) % speeds.length;
+            const speed = speeds[currentSpeedIdx];
+            audio.playbackRate = speed;
+            speedBtn.textContent = `${speed}x`;
+        });
+
+        function enrichData(raw) {
+            return raw.map((item, idx) => {
+                const s = item.start;
+                const e = item.end;
+                const match = labeledMoments.find(m => (s >= m.start && s <= m.end) || (e >= m.start && e <= m.end) || (s <= m.start && e >= m.end));
+                return {
+                    id: idx,
+                    start: s,
+                    end: e,
+                    speaker: item.speaker || 'Teacher',
+                    text: item.text,
+                    tagType: match ? match.type : null,
+                    tagLabel: match ? match.label : null
+                };
+            });
+        }
+
+        function render() {
+            listEl.innerHTML = '';
+            const filtered = transcriptData.filter(item => {
+                if (currentFilter === 'flex' && item.tagType !== 'flex') return false;
+                if (currentFilter === 'manip' && item.tagType !== 'manip') return false;
+
+                if (searchQuery.trim() !== '') {
+                    const q = searchQuery.toLowerCase();
+                    const textMatch = (item.text || '').toLowerCase().includes(q) ||
+                                      (item.tagLabel || '').toLowerCase().includes(q) ||
+                                      (item.speaker || '').toLowerCase().includes(q);
+                    if (!textMatch) return false;
+                }
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                listEl.innerHTML = `<div class="empty-state">No transcript lines match your search or filter.</div>`;
+                return;
+            }
+
+            filtered.forEach(item => {
+                const row = document.createElement('div');
+                let tagClass = '';
+                if (item.tagType === 'flex') tagClass = 'is-flex';
+                else if (item.tagType === 'manip') tagClass = 'is-manip';
+
+                row.className = `transcript-row ${tagClass}`;
+                row.id = `line-${item.id}`;
+                row.setAttribute('data-start', item.start);
+                row.setAttribute('data-end', item.end);
+
+                let badgeHtml = '';
+                if (item.tagType === 'flex') {
+                    badgeHtml = `<span class="tag-badge tag-flex">🔥 Flex</span>`;
+                } else if (item.tagType === 'manip') {
+                    badgeHtml = `<span class="tag-badge tag-manip">🎭 Control</span>`;
+                }
+
+                row.innerHTML = `
+                    <div class="row-meta">
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span class="timestamp">${formatTime(item.start)}</span>
+                            <span class="speaker-badge ${item.speaker.toLowerCase() === 'student' ? 'speaker-student' : 'speaker-teacher'}">${item.speaker}</span>
+                        </div>
+                        ${badgeHtml}
+                    </div>
+                    <div class="transcript-text">${item.text}</div>
+                    ${item.tagLabel ? `
+                        <div class="tag-title ${item.tagType === 'manip' ? 'manip-title' : ''}">
+                            <span>${item.tagType === 'flex' ? '🔥' : '🎭'} ${item.tagLabel}</span>
+                        </div>
+                    ` : ''}
+                `;
+
+                row.addEventListener('click', () => {
+                    audio.currentTime = item.start;
+                    audio.play();
+                });
+
+                listEl.appendChild(row);
+            });
+        }
+
+        function initTranscript(raw) {
+            transcriptData = enrichData(raw);
+            flexMoments = transcriptData.filter(d => d.tagType);
+
+            document.getElementById('countAll').textContent = transcriptData.length;
+            document.getElementById('countFlex').textContent = transcriptData.filter(d => d.tagType === 'flex').length;
+            document.getElementById('countManip').textContent = transcriptData.filter(d => d.tagType === 'manip').length;
+
+            render();
+        }
+
+        // 1. Instant load via transcript.js (Works on file:/// and GitHub Pages without CORS)
+        if (window.fullTranscriptData && Array.isArray(window.fullTranscriptData)) {
+            initTranscript(window.fullTranscriptData);
+        } else {
+            // 2. Fallback fetch
+            fetch('./full_transcript.json')
+                .then(res => res.json())
+                .then(data => initTranscript(data))
+                .catch(err => {
+                    console.error('Error loading full_transcript.json:', err);
+                });
+        }
+
+        // Filter tabs
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.getAttribute('data-filter');
+                render();
+            });
+        });
+
+        // Search input
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            render();
+        });
+
+        // Quick Jump to Prev / Next Flex or Control Moment
+        function jumpFlex(dir) {
+            const curr = audio.currentTime;
+            let target = null;
+            if (dir === 'next') {
+                target = flexMoments.find(f => f.start > curr + 1);
+                if (!target && flexMoments.length > 0) target = flexMoments[0];
+            } else {
+                const prevs = flexMoments.filter(f => f.start < curr - 1);
+                target = prevs[prevs.length - 1];
+                if (!target && flexMoments.length > 0) target = flexMoments[flexMoments.length - 1];
+            }
+            if (target) {
+                audio.currentTime = target.start;
+                audio.play();
+            }
+        }
+
+        prevFlexBtn.addEventListener('click', () => jumpFlex('prev'));
+        nextFlexBtn.addEventListener('click', () => jumpFlex('next'));
+    </script>
+</body>
+
+</html>
