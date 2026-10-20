@@ -24,6 +24,9 @@
             --manip-color: #ec4899;
             --manip-bg: rgba(236, 72, 153, 0.08);
             --manip-border: rgba(236, 72, 153, 0.4);
+            --dhomok-color: #ef4444;
+            --dhomok-bg: rgba(239, 68, 68, 0.08);
+            --dhomok-border: rgba(239, 68, 68, 0.4);
             --active-bg: rgba(56, 189, 248, 0.12);
             --active-border: #38bdf8;
         }
@@ -282,6 +285,7 @@
         }
 
         /* CONTROLS BAR: 3 TABS + SEARCH */
+        /* CONTROLS BAR: TABS SLIDER + SEARCH */
         .toolbar {
             display: flex;
             flex-direction: column;
@@ -289,30 +293,44 @@
             margin-bottom: 10px;
         }
 
-        /* 3 Tabs: ALWAYS ONE LINE NO MATTER WHAT */
-        .filter-tabs {
-            display: flex !important;
-            flex-wrap: nowrap !important;
-            gap: 6px;
+        /* Horizontal Scrollable Tabs Slider */
+        .filter-tabs-wrapper {
+            position: relative;
             width: 100%;
         }
 
+        .filter-tabs {
+            display: flex !important;
+            flex-wrap: nowrap !important;
+            overflow-x: auto !important;
+            gap: 7px;
+            width: 100%;
+            padding: 2px 2px 4px 2px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
+            justify-content: flex-start;
+        }
+
+        .filter-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
         .filter-btn {
-            flex: 1 1 0;
-            min-width: 0;
+            flex: 0 0 auto !important;
             background: var(--surface);
             border: 1px solid var(--border);
             color: var(--text-muted);
-            padding: 7px 4px;
-            border-radius: 8px;
+            padding: 6px 13px;
+            border-radius: 999px;
             font-size: 0.78rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.15s ease;
             white-space: nowrap !important;
-            overflow: hidden !important;
-            text-overflow: ellipsis !important;
             text-align: center;
+            user-select: none;
         }
 
         .filter-btn:hover {
@@ -323,7 +341,7 @@
         .filter-btn.active {
             color: var(--accent);
             border-color: var(--accent);
-            background: rgba(56, 189, 248, 0.08);
+            background: rgba(56, 189, 248, 0.1);
         }
 
         .filter-btn.active.flex-tab {
@@ -336,6 +354,12 @@
             color: var(--manip-color);
             border-color: var(--manip-color);
             background: var(--manip-bg);
+        }
+
+        .filter-btn.active.dhomok-tab {
+            color: var(--dhomok-color);
+            border-color: var(--dhomok-color);
+            background: var(--dhomok-bg);
         }
 
         .search-input {
@@ -393,6 +417,11 @@
             background: linear-gradient(90deg, rgba(236, 72, 153, 0.07) 0%, var(--surface) 100%);
         }
 
+        .transcript-row.is-dhomok {
+            border-left: 3px solid var(--dhomok-color);
+            background: linear-gradient(90deg, rgba(239, 68, 68, 0.08) 0%, var(--surface) 100%);
+        }
+
         .row-meta {
             display: flex;
             align-items: center;
@@ -418,6 +447,11 @@
         .is-manip .timestamp {
             color: var(--manip-color);
             background: rgba(236, 72, 153, 0.12);
+        }
+
+        .is-dhomok .timestamp {
+            color: var(--dhomok-color);
+            background: rgba(239, 68, 68, 0.12);
         }
 
         .speaker-badge {
@@ -454,6 +488,11 @@
             color: #ffffff;
         }
 
+        .tag-dhomok {
+            background: var(--dhomok-color);
+            color: #ffffff;
+        }
+
         .transcript-text {
             font-family: 'Hind Siliguri', 'Inter', sans-serif;
             font-size: 0.92rem;
@@ -473,6 +512,10 @@
 
         .tag-title.manip-title {
             color: var(--manip-color);
+        }
+
+        .tag-title.dhomok-title {
+            color: var(--dhomok-color);
         }
 
         .empty-state {
@@ -514,7 +557,7 @@
 
             .filter-btn {
                 font-size: 0.74rem;
-                padding: 6px 2px;
+                padding: 6px 11px;
             }
 
             /* Borderless unified feed on mobile: eliminates double-card look completely */
@@ -546,6 +589,11 @@
             .transcript-row.is-manip {
                 border-left: 3px solid var(--manip-color);
                 background: rgba(236, 72, 153, 0.06);
+            }
+
+            .transcript-row.is-dhomok {
+                border-left: 3px solid var(--dhomok-color);
+                background: rgba(239, 68, 68, 0.07);
             }
 
             .transcript-row.active {
@@ -610,12 +658,15 @@
             <audio id="audio" preload="metadata" src="sadik%20sir%202.mp3"></audio>
         </div>
 
-        <!-- CONTROLS: 3 TABS (ALWAYS ONE LINE) + SEARCH -->
+        <!-- CONTROLS: TABS SLIDER (ALL TO THE LEFT, PROPER SLIDING) + SEARCH -->
         <div class="toolbar">
-            <div class="filter-tabs">
-                <button class="filter-btn active" data-filter="all" title="সব লাইন">সব (<span id="countAll">257</span>)</button>
-                <button class="filter-btn flex-tab" data-filter="flex" title="নিজ">🔥 নিজ (<span id="countFlex">9</span>)</button>
-                <button class="filter-btn manip-tab" data-filter="manip" title="ম্যানিপুলেশন">🎭 ম্যানিপুলেশন (<span id="countManip">6</span>)</button>
+            <div class="filter-tabs-wrapper">
+                <div class="filter-tabs" id="filterTabs">
+                    <button class="filter-btn active" data-filter="all" title="সব লাইন">সব (<span id="countAll">257</span>)</button>
+                    <button class="filter-btn flex-tab" data-filter="flex" title="নিজ">🔥 নিজ (<span id="countFlex">9</span>)</button>
+                    <button class="filter-btn manip-tab" data-filter="manip" title="ম্যানিপুলেশন">🎭 ম্যানিপুলেশন (<span id="countManip">4</span>)</button>
+                    <button class="filter-btn dhomok-tab" data-filter="dhomok" title="ধমক">⚡ ধমক (<span id="countDhomok">4</span>)</button>
+                </div>
             </div>
             <input type="text" id="searchInput" class="search-input" placeholder="খুঁজুন / Search transcript...">
         </div>
@@ -627,9 +678,9 @@
     </div>
 
     <script>
-        // High-level analysis mapping of all major self-story moments & psychological manipulation moments
+        // High-level analysis mapping of all major self-story moments, psychological manipulation & shouting/dhomok moments
         const labeledMoments = [
-            // Major Self-Highlights / Personal Story Moments
+            // 1. Major Self-Highlights / Personal Story Moments (type: "flex" / নিজ)
             { start: 52.9, end: 80.5, label: "প্রক্সি / মামার একাউন্ট মাল্টি-অ্যাকাউন্টিং (নিজ গল্প)", type: "flex" },
             { start: 87.6, end: 126.5, label: "টপ রেটেড সেলার প্রায়োরিটি প্রিভিলেজ (নিজ)", type: "flex" },
             { start: 273.9, end: 299.5, label: "লারাভেল এজেন্সি ও ৩,০০০ কমপ্লিটেড প্রজেক্ট (নিজ)", type: "flex" },
@@ -640,13 +691,17 @@
             { start: 1251.6, end: 1303.5, label: "গ্লোবাল ক্লায়েন্ট মনোপলি (৩১% বনাম ৮৫% কভারেজ)", type: "flex" },
             { start: 1403.1, end: 1438.0, label: "লাইভ ক্লাসে মোবাইল অ্যাপে কাজ নামানো (নিজ)", type: "flex" },
 
-            // Manipulation / Authoritarian / Control Moments
+            // 2. Manipulation / Authoritarian / Control Moments (type: "manip" / ম্যানিপুলেশন)
             { start: 227.1, end: 247.5, label: "শিক্ষার্থীদের বুদ্ধিমত্তা নিয়ে তাচ্ছিল্য ও আত্মপ্রশংসা", type: "manip" },
             { start: 323.1, end: 348.0, label: "বকবক শোনা বাধ্যতামূলক করার কর্তৃত্ববাদী ভঙ্গি", type: "manip" },
-            { start: 1303.6, end: 1329.5, label: "খাবারের ব্রেক চাওয়ায় শিক্ষার্থীকে খোঁচা ও লজ্জা দেওয়া", type: "manip" },
             { start: 1494.6, end: 1512.5, label: "নির্ভরশীলতা তৈরি: 'বকবক না শুনলে কাজ নামাতে পারবেন না'", type: "manip" },
-            { start: 2125.1, end: 2135.5, label: "প্রশ্ন আটকাতে 'মাকে চেনা'র অদ্ভুত তুলনা", type: "manip" },
-            { start: 2221.1, end: 2249.5, label: "প্যাটার্নালিস্টিক 'বাবা' বলে কৌতূহল দমন", type: "manip" }
+            { start: 2145.1, end: 2154.5, label: "কর্তৃত্ববাদী নির্দেশ: 'এগুলো অনেক বকবক শুনতে হবে'", type: "manip" },
+
+            // 3. Shouting / Scolding Moments (type: "dhomok" / ধমক)
+            { start: 1303.6, end: 1329.5, label: "খাবারের ব্রেক চাওয়ায় শিক্ষার্থীকে ধমক ও লজ্জা দেওয়া", type: "dhomok" },
+            { start: 1388.1, end: 1403.0, label: "কাজ শেখার কথা বলায় ধমক: 'এত হাইপার হলে হবে না'", type: "dhomok" },
+            { start: 2108.1, end: 2135.5, label: "ফলো-আপ প্রশ্নে তাচ্ছিল্য: 'মাকে একবার চিনবা'", type: "dhomok" },
+            { start: 2174.6, end: 2240.0, label: "প্রশ্ন করায় ধমক: 'শুনো আগে, ভালো করে! এত উৎসুক হওয়া যাবে না'", type: "dhomok" }
         ];
 
         let transcriptData = [];
@@ -803,6 +858,7 @@
             const filtered = transcriptData.filter(item => {
                 if (currentFilter === 'flex' && item.tagType !== 'flex') return false;
                 if (currentFilter === 'manip' && item.tagType !== 'manip') return false;
+                if (currentFilter === 'dhomok' && item.tagType !== 'dhomok') return false;
 
                 if (searchQuery.trim() !== '') {
                     const q = searchQuery.toLowerCase();
@@ -824,6 +880,7 @@
                 let tagClass = '';
                 if (item.tagType === 'flex') tagClass = 'is-flex';
                 else if (item.tagType === 'manip') tagClass = 'is-manip';
+                else if (item.tagType === 'dhomok') tagClass = 'is-dhomok';
 
                 row.className = `transcript-row ${tagClass}`;
                 row.id = `line-${item.id}`;
@@ -835,11 +892,23 @@
                     badgeHtml = `<span class="tag-badge tag-flex">🔥 নিজ</span>`;
                 } else if (item.tagType === 'manip') {
                     badgeHtml = `<span class="tag-badge tag-manip">🎭 ম্যানিপুলেশন</span>`;
+                } else if (item.tagType === 'dhomok') {
+                    badgeHtml = `<span class="tag-badge tag-dhomok">⚡ ধমক</span>`;
                 }
 
                 let speakerLabel = item.speaker;
                 if (item.speaker.toLowerCase() === 'teacher') speakerLabel = 'শিক্ষক';
                 else if (item.speaker.toLowerCase() === 'student') speakerLabel = 'শিক্ষার্থী';
+
+                let tagIcon = '🔥';
+                let tagTitleClass = '';
+                if (item.tagType === 'manip') {
+                    tagIcon = '🎭';
+                    tagTitleClass = 'manip-title';
+                } else if (item.tagType === 'dhomok') {
+                    tagIcon = '⚡';
+                    tagTitleClass = 'dhomok-title';
+                }
 
                 row.innerHTML = `
                     <div class="row-meta">
@@ -851,8 +920,8 @@
                     </div>
                     <div class="transcript-text">${item.text}</div>
                     ${item.tagLabel ? `
-                        <div class="tag-title ${item.tagType === 'manip' ? 'manip-title' : ''}">
-                            <span>${item.tagType === 'flex' ? '🔥' : '🎭'} ${item.tagLabel}</span>
+                        <div class="tag-title ${tagTitleClass}">
+                            <span>${tagIcon} ${item.tagLabel}</span>
                         </div>
                     ` : ''}
                 `;
@@ -873,6 +942,7 @@
             document.getElementById('countAll').textContent = transcriptData.length;
             document.getElementById('countFlex').textContent = transcriptData.filter(d => d.tagType === 'flex').length;
             document.getElementById('countManip').textContent = transcriptData.filter(d => d.tagType === 'manip').length;
+            document.getElementById('countDhomok').textContent = transcriptData.filter(d => d.tagType === 'dhomok').length;
 
             render();
         }
@@ -893,9 +963,10 @@
         // Filter tabs
         filterBtns.forEach(btn => {
             btn.addEventListener('click', () => {
-                filterBtns.forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 currentFilter = btn.getAttribute('data-filter');
+                btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
                 render();
             });
         });
